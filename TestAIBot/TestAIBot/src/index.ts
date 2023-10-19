@@ -1,17 +1,17 @@
 // Import required packages
-const restify = require("restify");
+import * as restify from "restify";
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const {
+import {
   CloudAdapter,
-  ConfigurationServiceClientCredentialFactory,
   ConfigurationBotFrameworkAuthentication,
-} = require("botbuilder");
+  ConfigurationServiceClientCredentialFactory,
+} from "botbuilder";
 
 // This bot's main dialog.
-const app = require("./app");
-const config = require("./config");
+import app from "./app";
+import config from "./config";
 
 const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication(
   {},
@@ -57,19 +57,12 @@ server.listen(process.env.port || process.env.PORT || 3978, () => {
   console.log(`\nBot Started, ${server.name} listening to ${server.url}`);
 });
 
-import { Application, ConversationHistory, DefaultPromptManager, DefaultTurnState, OpenAIModerator, OpenAIPlanner, AI } from '@microsoft/teams-ai';
-import path from "path";
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface ConversationState {}
-type ApplicationTurnState = DefaultTurnState<ConversationState>;
-
-
 // Listen for incoming server requests.
 server.post("/api/messages", async (req, res) => {
   // Route received a request to adapter for processing
-  await adapter.process(req, res, async (context) => {
+  await adapter.process(req, res as any, async (context) => {
     // Dispatch to application for routing
     await app.run(context);
+    console.log(context);
   });
 });

@@ -1,13 +1,15 @@
-const { MemoryStorage } = require("botbuilder");
-const path = require("path");
-const config = require("./config");
+import { MemoryStorage } from "botbuilder";
+import * as path from "path";
 
 // See https://aka.ms/teams-ai-library to learn more about the Teams AI library.
-const {
+import {
   Application,
+  AzureOpenAIPlanner,
   DefaultPromptManager,
   OpenAIPlanner,
-} = require("@microsoft/teams-ai");
+} from "@microsoft/teams-ai";
+
+import config from "./config";
 
 // Create AI components
 // Use OpenAI
@@ -17,6 +19,7 @@ const planner = new OpenAIPlanner({
   useSystemMessage: true,
   logRequests: true,
 });
+
 // Uncomment the following lines to use Azure OpenAI
 /**
 const planner = new AzureOpenAIPlanner({
@@ -24,7 +27,7 @@ const planner = new AzureOpenAIPlanner({
   endpoint: config.azureOpenAIEndpoint,
   defaultModel: "gpt-35-turbo",
   useSystemMessage: true,
-  logRequests: true
+  logRequests: true,
 });
 */
 const promptManager = new DefaultPromptManager(path.join(__dirname, "../src/prompts"));
@@ -47,4 +50,4 @@ app.conversationUpdate("membersAdded", async (context) => {
   await context.sendActivity("How can I help you today?");
 });
 
-module.exports = app;
+export default app;

@@ -1,33 +1,36 @@
 // Import required packages
-const restify = require("restify");
+import * as restify from "restify";
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const {
+import {
   CloudAdapter,
   ConfigurationServiceClientCredentialFactory,
   ConfigurationBotFrameworkAuthentication,
-} = require("botbuilder");
+  TurnContext,
+} from "botbuilder";
 
 // This bot's main dialog.
-const app = require("./app");
-const config = require("./config");
+import { TeamsBot } from "./teamsBot";
+import config from "./config";
+
+// Create adapter.
+// See https://aka.ms/about-bot-adapter to learn more about adapters.
+const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
+  MicrosoftAppId: config.botId,
+  MicrosoftAppPassword: config.botPassword,
+  MicrosoftAppType: "MultiTenant",
+});
 
 const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication(
   {},
-  new ConfigurationServiceClientCredentialFactory({
-    MicrosoftAppId: config.botId,
-    MicrosoftAppPassword: process.env.BOT_PASSWORD,
-    MicrosoftAppType: "MultiTenant",
-  })
+  credentialsFactory
 );
 
-// Create adapter.
-// See https://aka.ms/about-bot-adapter to learn more about how bots work.
 const adapter = new CloudAdapter(botFrameworkAuthentication);
 
 // Catch-all for errors.
-const onTurnErrorHandler = async (context, error) => {
+const onTurnErrorHandler = async (context: TurnContext, error: Error) => {
   // This check writes out errors to console log .vs. app insights.
   // NOTE: In production environment, you should consider logging this to Azure
   //       application insights.
@@ -42,34 +45,26 @@ const onTurnErrorHandler = async (context, error) => {
   );
 
   // Send a message to the user
-  await context.sendActivity("The bot encountered an error or bug.");
+  await context.sendActivity(`The bot encountered unhandled error:\n ${error.message}`);
   await context.sendActivity("To continue to run this bot, please fix the bot source code.");
 };
 
 // Set the onTurnError for the singleton CloudAdapter.
 adapter.onTurnError = onTurnErrorHandler;
 
+// Create the bot that will handle incoming messages.
+const bot = new TeamsBot();
+
 // Create HTTP server.
 const server = restify.createServer();
 server.use(restify.plugins.bodyParser());
-
 server.listen(process.env.port || process.env.PORT || 3978, () => {
   console.log(`\nBot Started, ${server.name} listening to ${server.url}`);
 });
 
-import { Application, ConversationHistory, DefaultPromptManager, DefaultTurnState, OpenAIModerator, OpenAIPlanner, AI } from '@microsoft/teams-ai';
-import path from "path";
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface ConversationState {}
-type ApplicationTurnState = DefaultTurnState<ConversationState>;
-
-
-// Listen for incoming server requests.
+// Listen for incoming requests.
 server.post("/api/messages", async (req, res) => {
-  // Route received a request to adapter for processing
   await adapter.process(req, res, async (context) => {
-    // Dispatch to application for routing
-    await app.run(context);
+    await bot.run(context);
   });
 });
