@@ -1,0 +1,36 @@
+{
+    "server": {
+        "port": 8003
+    },
+    "app": {
+        "apiPrefix" : "",
+        "url": "https://fac7-2607-fb91-fa8-4e9d-7137-4164-ce7c-54da.ngrok-free.app"
+    },
+    "validations": {
+        "leastNodeVersion": 10
+    },
+    "credentials": {
+        "apikey": "36X8UFnixmYWMJ24TH14xT+nmXpEF9CqYbBTdJQwBPk=",
+        "appId": "cs-5e0489d1-bd3f-55d3-8ae0-2fd25f15d88e",
+        "st-67890":{
+            "apikey": "36X8UFnixmYWMJ24TH14xT+nmXpEF9CqYbBTdJQwBPk=",
+            "appId": "cs-5e0489d1-bd3f-55d3-8ae0-2fd25f15d88e"
+        }
+    },
+    "redis": {
+        "options": {
+            "host": "localhost",
+            "port": 6379
+        },
+        "available": false
+    },
+    "examples" : {
+        "mockServicesHost"  : "http://localhost:8004"
+    },
+    "liveagentlicense": "8947569",
+    "supportsMessageAck": true,
+    "languages":["en","de"],
+    "headers": {
+        "user-agent": "Kore/BotKit"
+    }
+}
