@@ -10,12 +10,8 @@
         "leastNodeVersion": 10
     },
     "credentials": {
-        "apikey": "36X8UFnixmYWMJ24TH14xT+nmXpEF9CqYbBTdJQwBPk=",
-        "appId": "cs-5e0489d1-bd3f-55d3-8ae0-2fd25f15d88e",
-        "st-67890":{
-            "apikey": "36X8UFnixmYWMJ24TH14xT+nmXpEF9CqYbBTdJQwBPk=",
-            "appId": "cs-5e0489d1-bd3f-55d3-8ae0-2fd25f15d88e"
-        }
+        "apikey": "hMUgfin3WFJ45vZEG7KgFPcp2cMvGEdcfkZjwPOsvAo=",
+        "appId": "cs-1ca419a5-21c9-5e3e-aebe-12e770fdb278"
     },
     "redis": {
         "options": {
@@ -25,7 +21,7 @@
         "available": false
     },
     "examples" : {
-        "mockServicesHost"  : "http://localhost:8004"
+        "mockServicesHost"  : "http://localhost:8003"
     },
     "liveagentlicense": "8947569",
     "supportsMessageAck": true,

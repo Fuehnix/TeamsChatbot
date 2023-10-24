@@ -1,5 +1,5 @@
-var botId = "st-48d9b4a2-b544-5cda-8313-31fbe0e3a8b9";
-var botName = "Flight Search";
+var botId = "st-0b0e6be1-93f0-5160-8679-a872eba119b0";
+var botName = "Flight Search_Webhook_jacobfuehne@yahoo.com_1";
 var sdk            = require("./lib/sdk");
 var Promise        = sdk.Promise;
 var request        = require("request");
@@ -8,10 +8,12 @@ var findFlightServiceUrl = 'https://test.api.amadeus.com/v2/shopping/flight-offe
 var findAirportServiceUrl = 'https://test.api.amadeus.com/v1/reference-data/locations';
 var getTokenUrl = 'https://test.api.amadeus.com/v1/security/oauth2/token';
 var amdAccessToken;
+console.log("test");
 
 // Make a request to get the access token
 function getAccessToken(clientId, clientSecret) {
     var url = getTokenUrl;
+    console.log(url);
     return new Promise(function(resolve, reject) {
         const requestOptions = {
             url: url,
@@ -39,6 +41,7 @@ function getAccessToken(clientId, clientSecret) {
 //Make request to service app to get the flight between source and destination
 function findFlights(origin, destination, departureDate, currency) {
     var url = findFlightServiceUrl+'?originLocationCode='+origin+'&destinationLocationCode='+destination+'&departureDate='+departureDate+'&adults=1&max=5&currencyCode='+currency;
+    console.log(url);
     return new Promise(function(resolve, reject) {
         const requestOptions = {
             url: url,
@@ -60,6 +63,7 @@ function findFlights(origin, destination, departureDate, currency) {
 //Make request to service app
 async function findAirports(searchTerm) {
     var url = findAirportServiceUrl+"?keyword="+searchTerm+"&subType=AIRPORT";
+    console.log(url);
     return new Promise(function(resolve, reject) {
         const requestOptions = {
             url: url,
