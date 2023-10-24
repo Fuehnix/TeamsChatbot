@@ -40,6 +40,7 @@ function getAccessToken(clientId, clientSecret) {
 
 //Make request to service app to get the flight between source and destination
 function findFlights(origin, destination, departureDate, currency) {
+    console.log("test flight");
     var url = findFlightServiceUrl+'?originLocationCode='+origin+'&destinationLocationCode='+destination+'&departureDate='+departureDate+'&adults=1&max=5&currencyCode='+currency;
     console.log(url);
     return new Promise(function(resolve, reject) {
@@ -63,7 +64,9 @@ function findFlights(origin, destination, departureDate, currency) {
 //Make request to service app
 async function findAirports(searchTerm) {
     var url = findAirportServiceUrl+"?keyword="+searchTerm+"&subType=AIRPORT";
+    console.log("test find");
     console.log(url);
+    console.log(amdAccessToken);
     return new Promise(function(resolve, reject) {
         const requestOptions = {
             url: url,
@@ -96,9 +99,12 @@ module.exports = {
     on_webhook      : async function(requestId, data, componentName, callback) 
     {
         var context = data.context;
+        console.log(context.session.BotUserSession);
         var currency = context.session.BotUserSession.currency;
         getAccessToken(context.session.BotUserSession.clientId, context.session.BotUserSession.clientSecret).then(function(token) {
             amdAccessToken = token;
+            console.log("token", token);
+            console.log("amdAccessToken", amdAccessToken);
             if (componentName === 'FlightsInfo') {
                 var origin = context.entities.Source;
                 var destination = context.entities.Dest;

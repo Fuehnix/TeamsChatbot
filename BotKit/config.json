@@ -10,8 +10,8 @@
         "leastNodeVersion": 10
     },
     "credentials": {
-        "apikey": "hMUgfin3WFJ45vZEG7KgFPcp2cMvGEdcfkZjwPOsvAo=",
-        "appId": "cs-1ca419a5-21c9-5e3e-aebe-12e770fdb278"
+        "apikey": "tIrTlXnP1QWnJFO11VALd3xCB5SjSUwseI+LD6piQ74=",
+        "appId": "cs-1f64c253-f8a5-5cfb-aa5c-33c76950436f"
     },
     "redis": {
         "options": {
