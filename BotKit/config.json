@@ -10,8 +10,28 @@
         "leastNodeVersion": 10
     },
     "credentials": {
-        "apikey": "tIrTlXnP1QWnJFO11VALd3xCB5SjSUwseI+LD6piQ74=",
-        "appId": "cs-1f64c253-f8a5-5cfb-aa5c-33c76950436f"
+        "apikey": "Y9BHkn3gT/lvZHOaZZd0OUjEeDT8ZZ/C3G1jEzar9Bs=",
+        "appId": "cs-721f3133-f603-5fc1-9c30-9593413ff070",
+        "st-67890":{
+            "apikey": "Y9BHkn3gT/lvZHOaZZd0OUjEeDT8ZZ/C3G1jEzar9Bs=",
+            "appId": "cs-721f3133-f603-5fc1-9c30-9593413ff070"
+        },
+        "st-0b0e6be1-93f0-5160-8679-a872eba119b0":{
+            "apikey": "Y9BHkn3gT/lvZHOaZZd0OUjEeDT8ZZ/C3G1jEzar9Bs=",
+            "appId": "cs-721f3133-f603-5fc1-9c30-9593413ff070"
+        }
+    },
+    "jwt": {
+        "jwtAlgorithm": "HS256",
+        "jwt-expiry": 60,
+        "st-67890":{
+            "jwtAlgorithm": "HS512",
+            "jwt-expiry": 60
+        },
+        "st-0b0e6be1-93f0-5160-8679-a872eba119b0":{
+            "jwtAlgorithm": "HS256",
+            "jwt-expiry": 60
+        }
     },
     "redis": {
         "options": {
@@ -25,8 +45,5 @@
     },
     "liveagentlicense": "8947569",
     "supportsMessageAck": true,
-    "languages":["en","de"],
-    "headers": {
-        "user-agent": "Kore/BotKit"
-    }
+    "languages":["en","de"]
 }

@@ -2,7 +2,9 @@ var botId = "st-0b0e6be1-93f0-5160-8679-a872eba119b0";
 var botName = "Flight Search_Webhook_jacobfuehne@yahoo.com_1";
 var sdk            = require("./lib/sdk");
 var Promise        = sdk.Promise;
-var request        = require("request");
+var { makeHttpCall } = require("./makeHttpCall");
+var qs = require('qs');
+
 
 var findFlightServiceUrl = 'https://test.api.amadeus.com/v2/shopping/flight-offers';
 var findAirportServiceUrl = 'https://test.api.amadeus.com/v1/reference-data/locations';
@@ -13,50 +15,48 @@ console.log("test");
 // Make a request to get the access token
 function getAccessToken(clientId, clientSecret) {
     var url = getTokenUrl;
-    console.log(url);
     return new Promise(function(resolve, reject) {
-        const requestOptions = {
-            url: url,
-            method: 'post',
-            headers: {
-                'Content-type': 'application/x-www-form-urlencoded'
-            },
-            form: {
-                client_id: clientId,
-                client_secret: clientSecret,
-                grant_type: 'client_credentials'
-            }
-        };
-        request(requestOptions, function(err, res) {
-            if(err) {
-                return reject(err);
-            }
-            var temp = JSON.parse(res.body);
+        let formData = {
+            client_id: clientId,
+            client_secret: clientSecret,
+            grant_type: 'client_credentials'
+        }
+        let data = qs.stringify(formData);
+        let headers = {
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
+        makeHttpCall(
+            'post',
+            url,
+            data,
+            headers
+        )
+        .then(function(res){
+            // console.log(res)
+            var temp = res.data;
             var token = temp['access_token'];
             resolve(token);
-        });
+        })
+        .catch(function(err){
+            return reject(err);
+        })
     });
 }
 
 //Make request to service app to get the flight between source and destination
 function findFlights(origin, destination, departureDate, currency) {
-    console.log("test flight");
     var url = findFlightServiceUrl+'?originLocationCode='+origin+'&destinationLocationCode='+destination+'&departureDate='+departureDate+'&adults=1&max=5&currencyCode='+currency;
-    console.log(url);
     return new Promise(function(resolve, reject) {
-        const requestOptions = {
-            url: url,
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + amdAccessToken
-            }
-        };
-        request(requestOptions, function(err, response) {
-            if(err) {
-                return reject(err);
-            }
-            resolve(JSON.parse(response.body));
-        });
+        let headers = {
+            'Authorization': 'Bearer ' + amdAccessToken
+        }
+        makeHttpCall('get', url, null, headers)
+        .then(function(response) {
+            resolve(response.data);
+        })
+        .catch(function(err) {
+            return reject(err);
+        })
     });
 }
 
@@ -64,24 +64,18 @@ function findFlights(origin, destination, departureDate, currency) {
 //Make request to service app
 async function findAirports(searchTerm) {
     var url = findAirportServiceUrl+"?keyword="+searchTerm+"&subType=AIRPORT";
-    console.log("test find");
-    console.log(url);
-    console.log(amdAccessToken);
+    let headers = {
+        'Authorization': 'Bearer ' + amdAccessToken
+    };
     return new Promise(function(resolve, reject) {
-        const requestOptions = {
-            url: url,
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + amdAccessToken
-            }
-        };
-        request(requestOptions, function(err, response) {
-            if(err) {
-                console.log(err);
-                return reject(err);
-            }
-            resolve(JSON.parse(response.body));
-        });
+        makeHttpCall('get', url, null, headers)
+        .then(function(response) {
+            resolve(response.data);
+        })
+        .catch(function(err) {
+            console.log(err);
+            return reject(err);
+        })
     });
 }
 
@@ -99,12 +93,15 @@ module.exports = {
     on_webhook      : async function(requestId, data, componentName, callback) 
     {
         var context = data.context;
-        console.log(context.session.BotUserSession);
         var currency = context.session.BotUserSession.currency;
+        console.log(context.session.BotUserSession);
+        try{
+            console.log(context.session.BotUserSession.clientId);
+        }catch(e){
+            console.log(e);
+        }
         getAccessToken(context.session.BotUserSession.clientId, context.session.BotUserSession.clientSecret).then(function(token) {
             amdAccessToken = token;
-            console.log("token", token);
-            console.log("amdAccessToken", amdAccessToken);
             if (componentName === 'FlightsInfo') {
                 var origin = context.entities.Source;
                 var destination = context.entities.Dest;

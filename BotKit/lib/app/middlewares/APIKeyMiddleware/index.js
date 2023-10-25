@@ -7,6 +7,7 @@ var jwt = require("jwt-simple");
 var config = require('../../../../config');
 var apiPrefix = config.app.apiPrefix;
 var credentials = config.credentials;
+var jwtProps = config.jwt;
 
 function APIKeyMiddleware() {
     var botIdregex = /(?<botId>st-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-5[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})/;
@@ -16,20 +17,39 @@ function APIKeyMiddleware() {
             url = url.slice(apiPrefix.length);
 
         var botId = url.match(botIdregex).groups.botId;
+        console.log(botId);
         var cred = credentials[botId]?credentials[botId]:credentials;
+        var jwtAlg = (jwtProps[botId] ? jwtProps[botId].jwtAlgorithm : jwtProps.jwtAlgorithm) || "HS256" ; //Adding HS256 as default algorithm if config is not set.
 
         if(_.has(header, 'apikey')){//DEPRECATED::SOON TO BE REMOVED
             if(header.apikey===cred.apikey)
                 return true;
         }
-        if(_.has(header, 'token')){
-            var appId;
+        // if(_.has(header, 'token')){
+        //     var appId;
+        //     try {
+        //         appId = jwt.decode(header.token, cred.apikey, false, jwtAlg).appId;
+        //     } catch(e){
+        //         console.info("invalid jwt token");
+        //     }
+        //     return appId === cred.appId;
+        // }
+        // return false;
+        var decoded = jwt.decode(header.token, null, true);
+        console.log("Decoded JWT without signature verification:", decoded);
+        if (_.has(header, 'token')) {
             try {
-                appId = jwt.decode(header.token, cred.apikey).appId;
-            } catch(e){
-                console.info("invalid jwt token");
+                console.log("Token to decode:", header.token);  // Debugging line
+                console.log("Secret key:", cred.apikey);  // Debugging line
+    
+                var decoded = jwt.decode(header.token, cred.apikey, false, jwtAlg);
+                console.log("Decoded JWT:", decoded);  // Debugging line
+                
+                return decoded.appId === cred.appId;
+            } catch (e) {
+                console.error("Failed to decode JWT:", e);  // Debugging line
+                return false;
             }
-            return appId === cred.appId;
         }
         return false;
     }
